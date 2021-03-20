@@ -87,7 +87,13 @@ exports.getTransactionHistory = (id, cond) => {
     SELECT t.*, u.id as idUser, picture, CONCAT(u.firstname, ' ', u.lastname) as name, email, phoneNumber
     FROM transactions t
     INNER JOIN users u ON u.id=idSender OR u.id = idReceiver
-    WHERE (idSender=${id} OR idReceiver=${id})
+    WHERE 
+    ${cond.filter && (cond.filter === 'sender' || cond.filter === 'receiver')
+        ? cond.filter === 'sender' ? `idSender=${id}` : `idReceiver=${id}`
+        : `(idSender=${id} OR idReceiver=${id})`}
+    ${cond.dateMin && cond.dateMax
+        ? `AND dateTransaction BETWEEN '${cond.dateMin} 00:00:00'  AND '${cond.dateMax} 23:59:00' `
+        : ''}
     AND CONCAT(u.firstname, ' ', u.lastname) LIKE "%${cond.search}%"
     AND u.id NOT IN (${id})
     ORDER BY ${cond.sort} ${cond.order}
@@ -106,7 +112,13 @@ exports.getCountTransactionHistory = (id, cond) => {
     SELECT COUNT(t.id) as totalData 
     FROM transactions t
     INNER JOIN users u ON u.id=idSender OR u.id = idReceiver
-    WHERE (idSender=${id} OR idReceiver=${id})
+    WHERE 
+    ${cond.filter && (cond.filter === 'sender' || cond.filter === 'receiver')
+        ? cond.filter === 'sender' ? `idSender=${id}` : `idReceiver=${id}`
+        : `(idSender=${id} OR idReceiver=${id})`}
+    ${cond.dateMin && cond.dateMax
+        ? `AND dateTransaction BETWEEN '${cond.dateMin} 00:00:00'  AND '${cond.dateMax} 23:59:00' `
+        : ''}
     AND CONCAT(u.firstname, ' ', u.lastname) LIKE "%${cond.search}%"
     AND u.id NOT IN (${id})
     `, (err, res, field) => {

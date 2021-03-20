@@ -122,6 +122,9 @@ exports.trasactionHistory = async (req, res) => {
     cond.offset = (cond.page - 1) * cond.limit
     cond.sort = cond.sort || 'id'
     cond.order = cond.order || 'ASC'
+    cond.filter = cond.filter || null
+
+    console.log(cond.filter)
 
     const totalData = await transactionModel.getCountTransactionHistory(id, cond)
     const totalPage = Math.ceil(Number(totalData[0].totalData) / cond.limit)
