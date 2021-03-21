@@ -108,3 +108,28 @@ exports.UpdateUser = async (req, res) => {
     return response(res, 400, false, 'Bad Request')
   }
 }
+
+exports.deletePicture = async (req, res) => {
+  try {
+    const { id } = req.params
+    console.log(id)
+    const initialResults = await userModel.getUsersByCondition({ id })
+    if (initialResults.length < 1) {
+      return response(res, 404, false, 'User Not Found')
+    }
+    if (initialResults[0].picture === null) {
+      return response(res, 400, false, 'Your are not using profile picture')
+    }
+    const uploadImage = await userModel.deletePicture(id)
+    if (uploadImage.affectedRows > 0) {
+      if (initialResults[0].picture !== null) {
+        fs.unlinkSync(`upload/profile/${initialResults[0].picture}`)
+      }
+      return response(res, 200, true, 'Delete picture profile successfully', { id, picture: null })
+    }
+    return response(res, 400, false, 'Cant Delete Profile')
+  } catch (err) {
+    console.log(err)
+    return response(res, 400, false, 'Bad Request')
+  }
+}

@@ -121,7 +121,7 @@ exports.trasactionHistory = async (req, res) => {
     cond.limit = Number(cond.limit) || 4
     cond.offset = (cond.page - 1) * cond.limit
     cond.sort = cond.sort || 'id'
-    cond.order = cond.order || 'ASC'
+    cond.order = cond.order || 'DESC'
     cond.filter = cond.filter || null
 
     console.log(cond.filter)
