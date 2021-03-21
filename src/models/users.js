@@ -42,6 +42,19 @@ exports.updateUser = (id, data) => {
     console.log(query.sql)
   })
 }
+exports.deletePicture = (id) => {
+  return new Promise((resolve, reject) => {
+    const query = db.query(`
+      UPDATE users
+      SET picture=NULL
+      WHERE id=${id}
+    `, (err, res, field) => {
+      if (err) reject(err)
+      resolve(res)
+    })
+    console.log(query.sql)
+  })
+}
 
 exports.getAllContactByCondition = (id, cond) => {
   return new Promise((resolve, reject) => {
