@@ -102,3 +102,37 @@ exports.transaction = checkSchema({
     }
   }
 })
+
+exports.topUp = checkSchema({
+  amount: {
+    notEmpty: {
+      errorMessage: 'The amount to top up is required.'
+    },
+    isNumeric: {
+      errorMessage: 'The amout to transfer must to number character'
+    },
+    isLength: {
+      options: { min: 2 },
+      errorMessage: 'The amout should be at least min 2 character'
+    }
+  },
+  dateTransaction: {
+    notEmpty: {
+      errorMessage: 'dateTransaction is required'
+    }
+  }
+
+})
+
+exports.topUpUpdate = checkSchema({
+  status: {
+    notEmpty: {
+      errorMessage: 'dateTransaction is required'
+    },
+    isIn: {
+      options: [['accept', 'reject']],
+      errorMessage: 'The status is only accept & reject'
+    }
+  }
+
+})
