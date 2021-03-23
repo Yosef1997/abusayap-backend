@@ -29,7 +29,7 @@ io.on('connection', () => {
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(morgan('dev'))
 app.use(cors('*'))
-app.use(require('./src/middleware/socket'))
+app.use(require('./src/middleware/socket')(io))
 
 app.use('/upload', express.static('upload'))
 

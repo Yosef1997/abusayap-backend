@@ -51,6 +51,7 @@ exports.updateTopUp = async (req, res) => {
     console.log(updateBelance)
     if (initialresults.affectedRows > 0 && updateBelance.affectedRows > 0) {
       const results = await topUpModel.getTopUpByCondition({ id })
+      req.socket.emit(`Update_Top_Up_${id}`, id)
       return response(res, 400, false, `Update status ${status === 'accept' ? status : 'reject'}`, {
         ...results
       })
