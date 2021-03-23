@@ -9,7 +9,6 @@ exports.createTransaction = async (req, res) => {
   try {
     const data = req.body
     const pinUser = await userModel.getUsersByCondition({ id: req.userData.id })
-    console.log(pinUser)
     const compare = bcrypt.compareSync(data.pin, pinUser[0].pin)
     if (compare) {
       if (pinUser[0].balance >= data.amount) {

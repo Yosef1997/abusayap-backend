@@ -39,6 +39,7 @@ app.use('/user', require('./src/routes/user'))
 app.use('/transaction', require('./src/routes/transaction'))
 app.use('/contact', require('./src/routes/contact'))
 app.use('/chart', require('./src/routes/chart'))
+app.use('/topup', require('./src/routes/topUp'))
 
 // Test App
 app.get('/', (req, res) => {
