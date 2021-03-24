@@ -48,7 +48,7 @@ exports.createTransaction = async (req, res) => {
         })
         const finalResults = await transactionModel.getUserTransactionById(results.insertId)
         const userReceiver = await userModel.getUsersByCondition({ id: finalResults[0].idReceiver })
-        return response(res, 200, true, 'Transaction successfully created', {
+        const myData = {
           id: finalResults[0].id,
           idSender: finalResults[0].idSender,
           amount: finalResults[0].amount,
@@ -62,7 +62,9 @@ exports.createTransaction = async (req, res) => {
               phoneNumber: userReceiver[0].phoneNumber
             }
           ]
-        })
+        }
+        req.socket.emit(`Receive_Transaction_${finalResults[0].idReceiver}`, myData)
+        return response(res, 200, true, 'Transaction successfully created', myData)
       } else {
         return response(res, 400, false, 'Balance is not enough')
       }
