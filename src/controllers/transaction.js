@@ -9,6 +9,10 @@ exports.createTransaction = async (req, res) => {
   try {
     const data = req.body
     const pinUser = await userModel.getUsersByCondition({ id: req.userData.id })
+    const dataReceiver = await userModel.getUsersByCondition({ id: data.idReceiver })
+    if (dataReceiver.length === 0) {
+      return response(res, 400, false, 'id Receiver not found')
+    }
     const compare = bcrypt.compareSync(data.pin, pinUser[0].pin)
     if (compare) {
       if (pinUser[0].balance >= data.amount) {
@@ -30,8 +34,10 @@ exports.createTransaction = async (req, res) => {
           await transactionModel.updateAmountTransaction(data.idReceiver, { income: income })
         }
 
-        const balance = pinUser[0].balance - data.amount
-        await userModel.updateUser(req.userData.id, { balance })
+        const balanceDecreased = pinUser[0].balance - Number(data.amount)
+        const balanceIncrease = dataReceiver[0].balance + Number(data.amount)
+        await userModel.updateUser(req.userData.id, { balance: balanceDecreased })
+        await userModel.updateUser(data.idReceiver, { balance: balanceIncrease })
         const results = await transactionModel.createTransaction({
           idSender: req.userData.id,
           idReceiver: data.idReceiver,
@@ -42,7 +48,7 @@ exports.createTransaction = async (req, res) => {
         })
         const finalResults = await transactionModel.getUserTransactionById(results.insertId)
         const userReceiver = await userModel.getUsersByCondition({ id: finalResults[0].idReceiver })
-        const myData = {
+        return response(res, 200, true, 'Transaction successfully created', {
           id: finalResults[0].id,
           idSender: finalResults[0].idSender,
           amount: finalResults[0].amount,
@@ -56,9 +62,7 @@ exports.createTransaction = async (req, res) => {
               phoneNumber: userReceiver[0].phoneNumber
             }
           ]
-        }
-        req.socket.emit(`Receive_Transaction_${finalResults[0].idReceiver}`, myData)
-        return response(res, 200, true, 'Transaction successfully created', myData)
+        })
       } else {
         return response(res, 400, false, 'Balance is not enough')
       }
