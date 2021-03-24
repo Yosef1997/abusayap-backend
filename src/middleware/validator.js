@@ -127,7 +127,7 @@ exports.topUp = checkSchema({
 exports.topUpUpdate = checkSchema({
   status: {
     notEmpty: {
-      errorMessage: 'dateTransaction is required'
+      errorMessage: 'status is required'
     },
     isIn: {
       options: [['accept', 'reject']],
