@@ -105,7 +105,7 @@ exports.forgotPasswordMobile = async (req, res) => {
     const existingUser = await userModel.getUsersByCondition({ email })
     if (existingUser.length > 0) {
       const id = existingUser[0].id
-      sendEmail(existingUser[0].id, 'https://abusayap.netlify.app/create-new-password', 'Reset Password', 'To reset your password, click the following link and follow the instructions.')
+      sendEmail(existingUser[0].id, 'https://abusayap2.netlify.app/', 'Reset Password', 'To reset your password, click the following link and follow the instructions.')
       return response(res, 200, true, 'Please check email to reset password!', { id })
     }
     return response(res, 401, false, 'Email not registered')
