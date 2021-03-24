@@ -18,8 +18,8 @@ exports.createdTopUp = async (req, res) => {
     const initialresults = await topUpModel.createTopUp({ idUser: id, ...data, picture })
     if (initialresults.affectedRows > 0) {
       const results = await topUpModel.getTopUpByCondition({ id: initialresults.insertId })
-      return response(res, 400, false, 'Thanks to top up, Waiting confirmation admin', {
-        ...results
+      return response(res, 200, true, 'Thanks to top up, Waiting confirmation admin', {
+        ...results[0]
       })
     }
     return response(res, 400, false, 'Top up failed')
