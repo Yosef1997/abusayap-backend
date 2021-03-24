@@ -9,6 +9,10 @@ exports.createTransaction = async (req, res) => {
   try {
     const data = req.body
     const pinUser = await userModel.getUsersByCondition({ id: req.userData.id })
+    const dataReceiver = await userModel.getUsersByCondition({ id: data.idReceiver })
+    if (dataReceiver.length === 0) {
+      return response(res, 400, false, 'id Receiver not found')
+    }
     const compare = bcrypt.compareSync(data.pin, pinUser[0].pin)
     if (compare) {
       if (pinUser[0].balance >= data.amount) {
@@ -30,8 +34,10 @@ exports.createTransaction = async (req, res) => {
           await transactionModel.updateAmountTransaction(data.idReceiver, { income: income })
         }
 
-        const balance = pinUser[0].balance - data.amount
-        await userModel.updateUser(req.userData.id, { balance })
+        const balanceDecreased = pinUser[0].balance - Number(data.amount)
+        const balanceIncrease = dataReceiver[0].balance + Number(data.amount)
+        await userModel.updateUser(req.userData.id, { balance: balanceDecreased })
+        await userModel.updateUser(data.idReceiver, { balance: balanceIncrease })
         const results = await transactionModel.createTransaction({
           idSender: req.userData.id,
           idReceiver: data.idReceiver,
