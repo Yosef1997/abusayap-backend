@@ -75,7 +75,7 @@ exports.createTransaction = async (req, res) => {
           return response(res, 200, true, 'Transaction successfully created', myData)
         } catch (err) {
           console.log(err)
-          return response(res, 400, false, 'Failed to send notification')
+          return response(res, 200, false, 'Transaction successfully created')
         }
       } else {
         return response(res, 400, false, 'Balance is not enough')
