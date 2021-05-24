@@ -31,7 +31,7 @@ app.use(morgan('dev'))
 app.use(cors('*'))
 app.use(require('./src/middleware/socket')(io))
 
-app.use('/upload', express.static('upload'))
+app.use('/upload', express.static('./upload'))
 
 // Put Routes in here
 app.use('/auth', require('./src/routes/auth'))
